@@ -48,6 +48,64 @@ struct gbm_device *devices[16];
 
 static int device_num = 0;
 
+
+
+uint32_t
+gbm_bo_get_offset(struct gbm_bo *bo, int plane)
+{
+   return 0;
+}
+
+int
+gbm_bo_get_plane_count(struct gbm_bo *bo)
+{
+   return 1;
+}
+
+uint32_t
+gbm_bo_get_stride_for_plane(struct gbm_bo *bo, int plane)
+{
+   if (plane)
+      return 0;
+
+   return gbm_bo_get_stride(bo);
+}
+
+struct gbm_surface *
+gbm_surface_create_with_modifiers(struct gbm_device *gbm,
+                                  uint32_t width, uint32_t height,
+                                  uint32_t format,
+                                  const uint64_t *modifiers,
+                                  const unsigned int count)
+{
+   return gbm_surface_create(gbm, width, height, format, 0);
+}
+
+#define DRM_FORMAT_MOD_INVALID ((1ULL<<56) - 1)
+
+uint64_t
+gbm_bo_get_modifier(struct gbm_bo *bo)
+{
+   return DRM_FORMAT_MOD_INVALID;
+}
+
+union gbm_bo_handle
+gbm_bo_get_handle_for_plane(struct gbm_bo *bo, int plane)
+{
+   union gbm_bo_handle ret;
+   ret.s32 = -1;
+
+   if (plane)
+      return ret;
+
+   return gbm_bo_get_handle(bo);
+}
+
+
+
+
+
+
 /** Returns the file description for the gbm device
  *
  * \return The fd that the struct gbm_device was created with
